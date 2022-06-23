@@ -64,6 +64,11 @@
       "name": "Data from the Human Protein Atlas in tab-separated format",
       "atlas_download_number": 25,
       "file_name": "proteinatlas.tsv.zip"
+    },
+    {
+      "name": "Data from the Human Protein Atlas in RDF format",
+      "atlas_download_number": 28,
+      "file_name": "proteinatlas.trig.gz"
     }
   ]
 }
