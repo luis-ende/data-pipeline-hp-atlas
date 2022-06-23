@@ -1,0 +1,69 @@
+{
+  "downloads": [
+    {
+      "name": "Normal tissue data",
+      "atlas_download_number": 1,
+      "file_name": "normal_tissue.tsv.zip"
+    },
+    {
+      "name": "Pathology data",
+      "atlas_download_number": 2,
+      "file_name": "pathology.tsv.zip"
+    },
+    {
+      "name": "Subcellular location data",
+      "atlas_download_number": 3,
+      "file_name": "subcellular_location.tsv.zip"
+    },
+    {
+      "name": "RNA consensus tissue gene data",
+      "atlas_download_number": 4,
+      "file_name": "rna_tissue_consensus.tsv.zip"
+    },
+    {
+      "name": "RNA HPA tissue gene data",
+      "atlas_download_number": 5,
+      "file_name": "rna_tissue_hpa.tsv.zip"
+    },
+    {
+      "name": "RNA GTEx tissue gene data",
+      "atlas_download_number": 6,
+      "file_name": "rna_tissue_gtex.tsv.zip"
+    },
+    {
+      "name": "RNA FANTOM tissue gene data",
+      "atlas_download_number": 7,
+      "file_name": "rna_tissue_fantom.tsv.zip"
+    },
+    {
+      "name": "RNA single cell type data",
+      "atlas_download_number": 8,
+      "file_name": "rna_single_cell_type.tsv.zip"
+    },
+    {
+      "name": "RNA single cell type tissue cluster data",
+      "atlas_download_number": 9,
+      "file_name": "rna_single_cell_type_tissue.tsv.zip"
+    },
+    {
+      "name": "RNA single cell read count data",
+      "atlas_download_number": 10,
+      "file_name": "rna_single_cell_read_count.tsv.zip"
+    },
+    {
+      "name": "RNA GTEx brain region gene data",
+      "atlas_download_number": 11,
+      "file_name": "rna_brain_gtex.tsv.zip"
+    },
+    {
+      "name": "RNA FANTOM brain region gene data",
+      "atlas_download_number": 12,
+      "file_name": "rna_brain_fantom.tsv.zip"
+    },
+    {
+      "name": "Data from the Human Protein Atlas in tab-separated format",
+      "atlas_download_number": 25,
+      "file_name": "proteinatlas.tsv.zip"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+.idea/
+pipeline.conf
+__pycache__/
+downloads/
+logs/
+data/
+hpa_data
+hp_atlas_downloads_index_test.json
