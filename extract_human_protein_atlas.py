@@ -6,6 +6,8 @@ import os
 import json
 import pandas as pd
 import zipfile
+import gzip
+import shutil
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -105,14 +107,33 @@ def unzip_downloaded_file(zip_update_file, version):
     if not os.path.exists(hp_atlas_data_version_path):
         os.mkdir(hp_atlas_data_version_path)
 
-    if os.path.exists(zip_update_file) and zipfile.is_zipfile(zip_update_file):
-        with zipfile.ZipFile(zip_update_file, 'r') as zip_ref:
-            print('Extracting file ' + zip_update_file + ' to ' + hp_atlas_data_path)
-            zip_ref.extractall(hp_atlas_data_version_path)
-            print('Zip file extracted.')
-        os.remove(zip_update_file)
+    unzip_success = True
+    if os.path.exists(zip_update_file):
+        if zipfile.is_zipfile(zip_update_file):
+            with zipfile.ZipFile(zip_update_file, 'r') as zip_ref:
+                print('Extracting file ' + zip_update_file + ' to ' + hp_atlas_data_path)
+                zip_ref.extractall(hp_atlas_data_version_path)
+                print('Zip file extracted.')
+            os.remove(zip_update_file)
+        else:
+            # Try extracting with gzip
+            try:
+                with gzip.open(zip_update_file, 'rb') as f_in:
+                    print('Extracting file ' + zip_update_file + ' to ' + hp_atlas_data_path)
+                    # Remove .zip or .gz extension
+                    dest_file_name = os.path.splitext(os.path.basename(zip_update_file))[0]
+                    dest_file_path = hp_atlas_data_version_path + '/' + dest_file_name
+                    with open(dest_file_path, 'wb') as f_out:
+                        shutil.copyfileobj(f_in, f_out)
+                    print('Gzip file extracted.')
+            except gzip.BadGzipFile:
+                unzip_success = False
+                print("File is not a valid gzip file '" + zip_update_file + "'")
     else:
-        print("Path doesn't exist or not valid zip file '" + zip_update_file + "'")
+        unzip_success = False
+        print("Zip file path not found '" + zip_update_file + "'")
+
+    if not unzip_success:
         sys.exit("[Error] Extraction of Human Protein Atlas zip file couldn't be completed successfully.")
 
 
