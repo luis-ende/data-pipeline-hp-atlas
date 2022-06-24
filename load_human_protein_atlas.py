@@ -10,10 +10,14 @@ cfg_parser.read('pipeline.conf')
 
 def create_posgresql_schema_file(version, version_dir, downloads_info):
     print("Generating Postgresql schemas...................")
-    schema_text = ''
     # Only process TSV files
     tsv_downloads_info = filter(lambda item: item['dest_file_name'].split('.')[-1] == 'tsv',
                                 downloads_info['downloads'])
+
+    sql_file_path = version_dir + '/create_schema.pgsql.sql'
+    with open(sql_file_path, 'w') as f:
+        f.write('-- HPA Version %s\n\n' % version)
+
     for download_file in tsv_downloads_info:
         print("Generating Postgresql schema for: " + download_file['dest_file_name'])
         output_file = six.StringIO()
@@ -22,26 +26,26 @@ def create_posgresql_schema_file(version, version_dir, downloads_info):
         # -t tab delimited, -i dialect 'postgresql'
         schema_def = CSVSQL(['-t', '-i', 'postgresql', tsv_file_path], output_file)
         schema_def.main()
-        schema_text += output_file.getvalue() + '\n\n'
+        schema_text = output_file.getvalue() + '\n\n'
         schema_text += "SELECT 'created table %s' AS progress;\n\n" % table_name
         print("Schema generated for: " + download_file['dest_file_name'])
-
-    sql_file_path = version_dir + '/create_schema.pgsql.sql'
-    with open(sql_file_path, 'w') as f:
-        f.write('-- HPA Version %s\n\n' % version)
-        f.write(schema_text + '\n')
+        with open(sql_file_path, 'a') as f:
+            f.write(schema_text + '\n')
 
 
 def create_postgresql_load_file(version, version_dir, downloads_info):
     sql_file_path = version_dir + '/load_tables.pgsql.sql'
-    load_statements = ''
     # Only process TSV files
     tsv_downloads_info = filter(lambda item: item['dest_file_name'].split('.')[-1] == 'tsv',
                                 downloads_info['downloads'])
+
+    with open(sql_file_path, 'w') as f:
+        f.write('-- HPA Version %s\n\n' % version)
+
     for download_file in tsv_downloads_info:
         # Remove file extension to form table name
         table_name = os.path.splitext(download_file['dest_file_name'])[0]
-        load_statements += "SELECT 'loading data from %s' AS progress;\n\n" % download_file['dest_file_name']
+        load_statements = "SELECT 'loading data from %s' AS progress;\n\n" % download_file['dest_file_name']
         load_statements += "COPY %s\n" % table_name
         load_statements += "FROM '/opt/human-protein-atlas-data/%s'\n" % download_file['dest_file_name']
         load_statements += "DELIMITER E'\\t'\n"
@@ -49,9 +53,8 @@ def create_postgresql_load_file(version, version_dir, downloads_info):
         load_statements += "CSV HEADER;\n\n"
         load_statements += "SELECT '%s' AS imported;\n\n" % table_name
 
-    with open(sql_file_path, 'w') as f:
-        f.write('-- HPA Version %s\n\n' % version)
-        f.write(load_statements)
+        with open(sql_file_path, 'a') as f:
+            f.write(load_statements)
 
 
 def load_postgresql_database(version, version_dir, downloads_info):
