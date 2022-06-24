@@ -9,8 +9,8 @@ from csvkit.utilities.csvsql import CSVSQL
 cfg_parser = configparser.ConfigParser()
 cfg_parser.read('pipeline.conf')
 
-MAX_TSV_COUNT_LINE = 1000000
-
+MAX_TSV_COUNT_LINE = 500000
+MAX_TSV_FILE_MB_SIZE = 1000
 
 def create_posgresql_schema_file(version, version_dir, downloads_info):
     print("Generating Postgresql schemas...................")
@@ -28,9 +28,13 @@ def create_posgresql_schema_file(version, version_dir, downloads_info):
         tsv_file_path = version_dir + '/' + download_file['dest_file_name']
         table_name = os.path.splitext(download_file['dest_file_name'])[0]
         if get_file_lines_count(tsv_file_path) > MAX_TSV_COUNT_LINE:
-            # Try creating a smaller sample file with fewer lines that can be handled by csvsql
+            # Tries creating a smaller sample file with fewer lines that can be handled by csvsql
             print("Generating sample file for: " + tsv_file_path)
-            tsv_file_path = create_sample_file(tsv_file_path)
+            sample_lines_count = MAX_TSV_COUNT_LINE
+            if os.stat(tsv_file_path).st_size / (1024 * 1024) > MAX_TSV_FILE_MB_SIZE:
+                # For files greater than 1GB take just one line to sample
+                sample_lines_count = 1
+            tsv_file_path = create_sample_file(tsv_file_path, sample_lines_count)
 
         # -t tab delimited, -i dialect 'postgresql'
         schema_def = CSVSQL(['-t', '--no-constraints', '-i', 'postgresql', tsv_file_path], output_file)
@@ -90,10 +94,11 @@ def get_file_lines_count(file_path):
     return lines_count
 
 
-def create_sample_file(file_path):
+def create_sample_file(file_path, sample_lines_count):
     file_path_elements = os.path.splitext(file_path)
     sample_file_path = '%s_sample%s' % (file_path_elements[0], file_path_elements[1])
-    exit_code = subprocess.check_call('head -n %d %s > %s' % (MAX_TSV_COUNT_LINE, file_path, file_path), shell=True)
+    exit_code = subprocess.check_call('head -n %d %s > %s' %
+                                      (sample_lines_count, file_path, sample_file_path), shell=True)
 
     if exit_code != 0:
         sample_file_path = file_path

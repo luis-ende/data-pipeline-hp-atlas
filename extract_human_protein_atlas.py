@@ -72,7 +72,7 @@ def download_hpa_files(version):
 
             time.sleep(2)
 
-            download_file_size = os.stat(file_name).st_size / (1024 * 1024)
+            download_file_size = os.stat(file_name).st_size
             dest_file_path = unzip_downloaded_file(file_name, major_version)
 
             downloads_info['downloads'].append({
