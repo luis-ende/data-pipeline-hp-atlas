@@ -120,7 +120,6 @@ def unzip_downloaded_file(zip_update_file, version):
                 print('Extracting file ' + zip_update_file + ' to ' + hp_atlas_data_path)
                 zip_ref.extractall(hp_atlas_data_version_path)
                 print('Zip file extracted.')
-            os.remove(zip_update_file)
         else:
             # Try extracting with gzip
             try:
@@ -136,7 +135,9 @@ def unzip_downloaded_file(zip_update_file, version):
         unzip_success = False
         print("Zip file path not found '" + zip_update_file + "'")
 
-    if not unzip_success:
+    if unzip_success:
+        os.remove(zip_update_file)
+    else:
         sys.exit("[Error] Extraction of Human Protein Atlas zip file couldn't be completed successfully.")
 
     return dest_file_path

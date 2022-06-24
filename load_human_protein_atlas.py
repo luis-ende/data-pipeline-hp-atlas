@@ -1,3 +1,5 @@
+import sys
+
 import six
 import os
 import subprocess
@@ -6,6 +8,8 @@ from csvkit.utilities.csvsql import CSVSQL
 
 cfg_parser = configparser.ConfigParser()
 cfg_parser.read('pipeline.conf')
+
+MAX_TSV_COUNT_LINE = 1000000
 
 
 def create_posgresql_schema_file(version, version_dir, downloads_info):
@@ -23,8 +27,13 @@ def create_posgresql_schema_file(version, version_dir, downloads_info):
         output_file = six.StringIO()
         tsv_file_path = version_dir + '/' + download_file['dest_file_name']
         table_name = os.path.splitext(download_file['dest_file_name'])[0]
+        if get_file_lines_count(tsv_file_path) > MAX_TSV_COUNT_LINE:
+            # Try creating a smaller sample file with fewer lines that can be handled by csvsql
+            print("Generating sample file for: " + tsv_file_path)
+            tsv_file_path = create_sample_file(tsv_file_path)
+
         # -t tab delimited, -i dialect 'postgresql'
-        schema_def = CSVSQL(['-t', '-i', 'postgresql', tsv_file_path], output_file)
+        schema_def = CSVSQL(['-t', '--no-constraints', '-i', 'postgresql', tsv_file_path], output_file)
         schema_def.main()
         schema_text = output_file.getvalue() + '\n\n'
         schema_text += "SELECT 'created table %s' AS progress;\n\n" % table_name
@@ -72,3 +81,23 @@ def load_postgresql_database(version, version_dir, downloads_info):
                                        cfg_parser.get('supernus_human_protein_atlas_db', 'db_password')),
                                       shell=True)
     print("Script executed. Exit code: " + str(exit_code))
+
+
+def get_file_lines_count(file_path):
+    process = subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE)
+    lines_count = int(process.communicate()[0].decode('utf-8').split(' ')[0])
+
+    return lines_count
+
+
+def create_sample_file(file_path):
+    file_path_elements = os.path.splitext(file_path)
+    sample_file_path = '%s_sample%s' % (file_path_elements[0], file_path_elements[1])
+    exit_code = subprocess.check_call('head -n %d %s > %s' % (MAX_TSV_COUNT_LINE, file_path, file_path), shell=True)
+
+    if exit_code != 0:
+        sample_file_path = file_path
+
+    return sample_file_path
+
+
