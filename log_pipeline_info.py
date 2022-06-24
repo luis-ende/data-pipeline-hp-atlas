@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import configparser
+from datetime import datetime
 
 
 cfg_parser = configparser.ConfigParser()
@@ -26,5 +27,6 @@ def log_updates_info(latest_updates):
 
 def update_config_info(latest_updates):
     cfg_parser.set('last_update', 'current_hp_atlas_version', latest_updates['version'])
+    cfg_parser.set('last_update', 'downloads_last_update', datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
     with open('pipeline.conf', 'w') as configfile:
         cfg_parser.write(configfile)

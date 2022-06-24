@@ -19,7 +19,6 @@ fi
 echo "Running new Docker container..."
 docker run --name human-protein-atlas-postgres --restart=always \
   --mount type=bind,source="$ATLAS_TSV_PATH",target=/opt/human-protein-atlas-data \
-  --mount type=bind,source="${SCRIPT_DIR}/scripts/sql",target=/opt/human-protein-atlas-scripts \
   -p 7767:5432 \
   -e POSTGRES_USER=atlas-admin -e POSTGRES_PASSWORD="$DB_PASSWORD" -e POSTGRES_DB=human-protein-atlas \
   -d human_protein_atlas/postgres

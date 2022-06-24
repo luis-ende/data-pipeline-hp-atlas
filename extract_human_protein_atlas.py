@@ -33,7 +33,7 @@ def get_hpa_latest_version():
 
 
 def download_hpa_files(version):
-    date_format = '%Y-%m-%dT%H:%M:%S.000Z'
+    date_format = '%Y-%m-%dT%H:%M:%S'
     downloads_info = {
         'version': version,
         'download_date': datetime.now().strftime(date_format),
@@ -65,14 +65,6 @@ def download_hpa_files(version):
             except:
                 file_download_status = 'failed'
 
-            downloads_info['downloads'].append({
-                'download_file_url': download_url,
-                'download_content_type': 'application/zip',
-                'download_file_size': os.stat(file_name).st_size / (1024 * 1024),
-                'download_date': datetime.now().strftime(date_format),
-                'download_status': file_download_status
-            })
-
             if file_download_status == 'failed':
                 # Stop pipeline here if one file fails to download
                 downloads_info['download_status'] = 'failed'
@@ -80,7 +72,17 @@ def download_hpa_files(version):
 
             time.sleep(2)
 
-            unzip_downloaded_file(file_name, major_version)
+            download_file_size = os.stat(file_name).st_size / (1024 * 1024)
+            dest_file_path = unzip_downloaded_file(file_name, major_version)
+
+            downloads_info['downloads'].append({
+                'download_file_url': download_url,
+                'download_content_type': 'application/zip',
+                'download_file_size': download_file_size,
+                'download_date': datetime.now().strftime(date_format),
+                'download_status': file_download_status,
+                'dest_file_name': os.path.basename(dest_file_path)
+            })
 
     return downloads_info
 
@@ -107,6 +109,10 @@ def unzip_downloaded_file(zip_update_file, version):
     if not os.path.exists(hp_atlas_data_version_path):
         os.mkdir(hp_atlas_data_version_path)
 
+    # Remove .zip or .gz extension
+    dest_file_name = os.path.splitext(os.path.basename(zip_update_file))[0]
+    dest_file_path = hp_atlas_data_version_path + '/' + dest_file_name
+
     unzip_success = True
     if os.path.exists(zip_update_file):
         if zipfile.is_zipfile(zip_update_file):
@@ -120,9 +126,6 @@ def unzip_downloaded_file(zip_update_file, version):
             try:
                 with gzip.open(zip_update_file, 'rb') as f_in:
                     print('Extracting file ' + zip_update_file + ' to ' + hp_atlas_data_path)
-                    # Remove .zip or .gz extension
-                    dest_file_name = os.path.splitext(os.path.basename(zip_update_file))[0]
-                    dest_file_path = hp_atlas_data_version_path + '/' + dest_file_name
                     with open(dest_file_path, 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
                     print('Gzip file extracted.')
@@ -135,6 +138,8 @@ def unzip_downloaded_file(zip_update_file, version):
 
     if not unzip_success:
         sys.exit("[Error] Extraction of Human Protein Atlas zip file couldn't be completed successfully.")
+
+    return dest_file_path
 
 
 def download_single_entries(version, version_dir):

@@ -10,7 +10,7 @@ def build_supernus_human_protein_atlas():
     if downloads_info['download_status'] == 'success':
         print('Loading downloads into the database ................')
         version_directory = 'v' + latest_version[:latest_version.index(".")]
-        load_postgresql_database(version_directory)
+        load_postgresql_database(latest_version, version_directory, downloads_info)
         update_config_info(downloads_info)
         print('Downloading single entry files .....................................')
         download_single_entries(latest_version, version_directory)
@@ -19,6 +19,8 @@ def build_supernus_human_protein_atlas():
 
     print('Logging updates info .....................................')
     log_updates_info(downloads_info)
+    # TODO: Add notifications via Email to provide information about errors
+
 
 if __name__ == '__main__':
     build_supernus_human_protein_atlas()
