@@ -9,11 +9,11 @@ cfg_parser = configparser.ConfigParser()
 cfg_parser.read('pipeline.conf')
 
 
-def log_updates_info(latest_updates):
+def log_updates_info(latest_updates, config_log_file_option):
     """
     Log applied updates (see pipeline.conf)
     """
-    updates_log_file = cfg_parser.get('pipeline_log_paths', 'latest_updates_file')
+    updates_log_file = cfg_parser.get('pipeline_log_paths', config_log_file_option)
     updates_list = []
     if os.path.exists(updates_log_file):
         f = open(updates_log_file)

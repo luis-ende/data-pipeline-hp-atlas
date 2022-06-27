@@ -1,3 +1,6 @@
+[pipeline_options]
+always_download_single_entries = True
+
 [downloads_source]
 hp_atlas_downloads_index = hp_atlas_downloads_index.json
 hp_atlas_single_entry_download_extensions = xml
