@@ -16,7 +16,7 @@ else
 fi
 
 # DB Service will be available once the atlas data has been loaded from the TSV files
-echo "Running new Docker container..."
+echo "Running new Docker container with bind source to '$ATLAS_TSV_PATH' ..."
 docker run --name human-protein-atlas-postgres --restart=always \
   --mount type=bind,source="$ATLAS_TSV_PATH",target=/opt/human-protein-atlas-data \
   -p 7767:5432 \

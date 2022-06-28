@@ -46,11 +46,6 @@
       "file_name": "rna_single_cell_type_tissue.tsv.zip"
     },
     {
-      "name": "RNA single cell read count data",
-      "atlas_download_number": 10,
-      "file_name": "rna_single_cell_read_count.tsv.zip"
-    },
-    {
       "name": "RNA GTEx brain region gene data",
       "atlas_download_number": 11,
       "file_name": "rna_brain_gtex.tsv.zip"

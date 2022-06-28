@@ -19,6 +19,7 @@
 * Check if the Docker container `human-protein-atlas-postgres` is running and the status is up with: `docker ps` 
 * Once the Docker container is running, use following command to connect to the Postgres instance via psql: 
 `docker exec -it human-protein-atlas-postgres psql -U atlas-admin -d human-protein-atlas`
+* To get a bash interactive shell for the running container use: `docker exec -it human-protein-atlas-postgres /bin/bash`
 * The pipeline infers the latest version of the HPA by web scrapping the page: [https://www.proteinatlas.org/about/download](https://www.proteinatlas.org/about/download)
 
 ## Generated files

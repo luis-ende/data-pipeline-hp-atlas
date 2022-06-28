@@ -173,6 +173,10 @@ def download_single_entries(version, version_dir):
         for download_extension in download_extensions:
             file_name = ensembl + '.' + download_extension
             file_path = ensembl_dir + '/' + file_name
+            if os.path.exists(file_path):
+                print("File '%s' already exists. Skipping..." % file_path)
+                continue
+
             download_url = HPA_SINGLE_ENTRY_DOWNLOAD_URL_PATTERN % (get_major_version(version),
                                                                     ensembl, download_extension)
             download_success = False

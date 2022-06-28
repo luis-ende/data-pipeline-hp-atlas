@@ -36,8 +36,10 @@ def create_posgresql_schema_file(version, version_dir, downloads_info):
                 sample_lines_count = 1
             tsv_file_path = create_sample_file(tsv_file_path, sample_lines_count)
 
-        # -t tab delimited, -i dialect 'postgresql'
-        schema_def = CSVSQL(['-t', '--no-constraints', '-i', 'postgresql', tsv_file_path], output_file)
+        # '-t' tab delimited, '-i' dialect 'postgresql',
+        # '--blanks' Do not convert "", "na", "n/a", "none", "null", "." to NULL.
+        schema_def = CSVSQL(['-t', '--no-constraints', '--blanks', '-i', 'postgresql', '--tables',
+                             table_name, tsv_file_path], output_file)
         schema_def.main()
         schema_text = output_file.getvalue() + '\n\n'
         schema_text += "SELECT 'created table %s' AS progress;\n\n" % table_name

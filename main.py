@@ -22,7 +22,7 @@ def build_supernus_human_protein_atlas():
             version_directory = get_version_dir_name(latest_version)
             load_postgresql_database(latest_version, version_directory, downloads_info)
             update_config_info(downloads_info)
-            if bool(cfg_parser.get('pipeline_execution', 'always_download_single_entries')):
+            if cfg_parser.get('pipeline_execution', 'always_download_single_entries') == "True":
                 print('Downloading single entry files .....................................')
                 download_single_entries(latest_version, version_directory)
         else:
@@ -30,6 +30,8 @@ def build_supernus_human_protein_atlas():
 
         print('Logging updates info .....................................')
         log_updates_info(downloads_info, 'latest_updates_file')
+    else:
+        print('No new version found. Pipeline finished.')
         # TODO: Add notifications via Email to provide information about errors
 
 
