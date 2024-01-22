@@ -11,7 +11,7 @@ cfg_parser = configparser.ConfigParser()
 cfg_parser.read('pipeline.conf')
 
 
-def build_supernus_human_protein_atlas():
+def build_dp_human_protein_atlas():
     print('Fetching latest HPA version ................')
     latest_version = get_hpa_latest_version()
     if latest_version != cfg_parser.get('last_update', 'current_hp_atlas_version'):
@@ -43,4 +43,4 @@ if __name__ == '__main__':
         print('Logging updates info .....................................')
         log_updates_info(se_downloads_info, 'latest_single_entrie_updates')
     else:
-        build_supernus_human_protein_atlas()
+        build_dp_human_protein_atlas()

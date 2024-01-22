@@ -108,7 +108,7 @@ def get_downloads_index():
 
 
 def unzip_downloaded_file(zip_update_file, version):
-    hp_atlas_data_path = cfg_parser.get('data_paths', 'supernus_hp_data_path')
+    hp_atlas_data_path = cfg_parser.get('data_paths', 'dp_hp_data_path')
     if not os.path.exists(hp_atlas_data_path):
         sys.exit("Human Protein Atlas data directory doesn't exist: " + hp_atlas_data_path +
                  ". See [data_paths] section in config file.")
@@ -154,7 +154,7 @@ def unzip_downloaded_file(zip_update_file, version):
 def download_single_entries(version, version_dir):
     downloads_info = []
     download_extensions = cfg_parser.get('downloads_source', 'hp_atlas_single_entry_download_extensions').split(',')
-    hp_data_path = cfg_parser.get('data_paths', 'supernus_hp_data_path') + '/' + version_dir
+    hp_data_path = cfg_parser.get('data_paths', 'dp_hp_data_path') + '/' + version_dir
     proteinatlas_tsv_path = hp_data_path + '/' + 'proteinatlas.tsv'
     # Set option to -1 in the configuration to download all files
     downloads_limit = int(cfg_parser.get('downloads_source', 'hp_atlas_single_entry_downloads_limit'))

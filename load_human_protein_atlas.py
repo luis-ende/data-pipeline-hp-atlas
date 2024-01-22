@@ -73,7 +73,7 @@ def create_postgresql_load_file(version, version_dir, downloads_info):
 
 
 def load_postgresql_database(version, version_dir, downloads_info):
-    hpa_version_directory = cfg_parser.get('data_paths', 'supernus_hp_data_path') + '/' + version_dir
+    hpa_version_directory = cfg_parser.get('data_paths', 'dp_hp_data_path') + '/' + version_dir
     # Generate create_schema.pgsql.sql
     create_posgresql_schema_file(version, hpa_version_directory, downloads_info)
     # Generate load_tables.pgsql.sql
@@ -84,7 +84,7 @@ def load_postgresql_database(version, version_dir, downloads_info):
     print("Executing Docker container script...............")
     exit_code = subprocess.check_call("./docker/create_human_protein_atlas_db_container.sh %s %s" %
                                       (hpa_version_directory,
-                                       cfg_parser.get('supernus_human_protein_atlas_db', 'db_password')),
+                                       cfg_parser.get('dp_human_protein_atlas_db', 'db_password')),
                                       shell=True)
     print("Script executed. Exit code: " + str(exit_code))
 

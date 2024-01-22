@@ -11,11 +11,11 @@ downloads_last_update = 2022-06-21T03:26:21.000Z
 current_hp_atlas_version = 21.1
 
 [data_paths]
-supernus_hp_data_path = /home/user/Projects/sas-human-protein-atlas/data
+dp_hp_data_path = /home/user/Projects/sas-human-protein-atlas/data
 
 [pipeline_log_paths]
 latest_updates_file = ./logs/latest_updates.json
 latest_single_entrie_updates = ./logs/latest_single_entries_updates.json
 
-[supernus_human_protein_atlas_db]
+[dp_human_protein_atlas_db]
 db_password = atlas-postgres
